@@ -13,7 +13,7 @@ interface AsteroidDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAsteroids(vararg users: Asteroid)
 
-    @Query("SELECT * FROM asteroid_table")
+    @Query("SELECT * FROM asteroid_table ORDER BY closeApproachDate ASC")
     fun load(): LiveData<List<Asteroid>>
 
     @Query("DELETE FROM asteroid_table")
