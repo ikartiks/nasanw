@@ -9,7 +9,7 @@ import java.util.concurrent.Executor
  * webservice requests).
  */
 //private val networkIOExecutor: Executor
-class AppExecutors (
+class AppExecutors(
     private val diskIOExecutor: DiskIOThreadExecutor,
     private val mainThreadExecutor: MainThreadExecutor
 ) {

@@ -18,8 +18,10 @@ class MainFragment : Fragment() {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val binding = FragmentMainBinding.inflate(inflater)
         binding.lifecycleOwner = this
         asteroidAdapter = AsteroidAdapter()
@@ -35,12 +37,13 @@ class MainFragment : Fragment() {
 
         binding.viewModel = viewModel
         viewModel.fetchAsteroids()
-        viewModel.getAsteroids(this).observeX(this){
+        viewModel.getAsteroids(this).observeX(this) {
             it?.let { list ->
                 asteroidAdapter.setAsteroidList(list)
                 asteroidAdapter.notifyDataSetChanged()
             }
         }
+        viewModel.fetchTodaysImage(binding.activityMainImageOfTheDay)
         setHasOptionsMenu(true)
         return binding.root
     }

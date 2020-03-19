@@ -1,15 +1,20 @@
 package com.udacity.asteroidradar.main
 
 import android.app.Application
-import androidx.lifecycle.*
+import android.widget.ImageView
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import com.squareup.picasso.Picasso
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.repo.Repository
 import com.udacity.asteroidradar.repo.UdacityDatabase
 
 class MainViewModel(val app: Application) : AndroidViewModel(app) {
 
-    fun fetchAsteroids(){
-        val repo = Repository( app.applicationContext)
+    fun fetchAsteroids() {
+        val repo = Repository(app.applicationContext)
         repo.fetchAsteroids()
     }
 
@@ -28,4 +33,14 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
             }
         return mediatorLiveData
     }
+
+    fun fetchTodaysImage(imageView: ImageView) {
+        val repo = Repository(app.applicationContext)
+        repo.fetchTodaysImage {
+            if (it.mediaType == "image")
+                Picasso.with(imageView.context).load(it.url).into(imageView)
+        }
+    }
+
+
 }

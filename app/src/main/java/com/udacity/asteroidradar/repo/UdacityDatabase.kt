@@ -11,11 +11,10 @@ abstract class UdacityDatabase : RoomDatabase() {
     abstract fun asteroidDao(): AsteroidDao
 
 
-
     companion object {
         fun create(context: Context): UdacityDatabase =
-                Room.databaseBuilder(context, UdacityDatabase::class.java, "udacity")
-                        .build()
+            Room.databaseBuilder(context, UdacityDatabase::class.java, "udacity")
+                .build()
 
         @Volatile
         private var instance: UdacityDatabase? = null // Singleton instantiation
@@ -28,6 +27,6 @@ abstract class UdacityDatabase : RoomDatabase() {
     }
 
     fun clearAll() {
-       asteroidDao().clear()
+        asteroidDao().clear()
     }
 }
