@@ -38,7 +38,9 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
         liveData?.removeObservers(owner)
         val roomDatabase = UdacityDatabase.getInstance(app.applicationContext)
         liveData?.let { mediatorLiveData.removeSource(it) }
-        liveData = roomDatabase.asteroidDao().load()
+        val currentTime = Calendar.getInstance().time
+        val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
+        liveData = roomDatabase.asteroidDao().load(dateFormat.format(currentTime))
             .apply {
                 mediatorLiveData.addSource(this) { resource ->
                     mediatorLiveData.value = resource
