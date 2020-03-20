@@ -18,6 +18,7 @@ class FetchAsteroidWorker(private val appContext: Context, workerParams: WorkerP
                 val appExecutors = AppExecutors(DiskIOThreadExecutor(), MainThreadExecutor())
                 result = Result.success()
                 appExecutors.diskIO().execute {
+                    //DELETE all previous asteroids
                     roomDatabase.clearAll()
                     roomDatabase.asteroidDao().insertAsteroids(*it.toTypedArray())
                 }

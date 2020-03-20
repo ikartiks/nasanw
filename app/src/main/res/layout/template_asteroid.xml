@@ -22,7 +22,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:text="@{asteroid.codename}"
-            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            tools:text= "@string/absolute_magnitude_title"
             />
 
         <androidx.appcompat.widget.AppCompatTextView

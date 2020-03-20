@@ -76,7 +76,7 @@ class Repository(val context: Context) {
         }
     }
 
-    fun fetchTodaysImage(callback: (PictureOfDay) -> Unit) {
+    fun fetchTodaysImage(callback: (PictureOfDay?) -> Unit) {
         val service: API = RetrofitInstance.retrofitInstance.create(
             API::class.java
         )
@@ -88,7 +88,7 @@ class Repository(val context: Context) {
 
             override fun onResponse(call: Call<PictureOfDay>, response: Response<PictureOfDay>) {
                 if (response.isSuccessful)
-                    callback.invoke(response.body()!!)
+                    callback.invoke(response.body())
             }
 
         })

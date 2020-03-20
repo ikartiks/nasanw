@@ -7,10 +7,15 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.ExistingPeriodicWorkPolicy
 import com.squareup.picasso.Picasso
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
+import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.repo.FetchAsteroidWorker
 import com.udacity.asteroidradar.repo.Repository
 import com.udacity.asteroidradar.repo.UdacityDatabase
@@ -29,6 +34,7 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
             .setConstraints(constraints)
             .build()
         WorkManager.getInstance().enqueueUniquePeriodicWork("fetchAsteroids",ExistingPeriodicWorkPolicy.REPLACE, uploadWorkRequest)
+        //NOTE fetchAsteroids does not need to be in strings.xml as they are logical keys & not user displayable values
     }
 
     private var liveData: LiveData<List<Asteroid>>? = null
@@ -50,25 +56,31 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
     }
 
     fun fetchTodaysImage(imageView: ImageView) {
+        //NOTE strings hardcoded below do not need to be in strings.xml as they are logical keys & not user displayable values
         val sharedPref = app.applicationContext.getSharedPreferences("preferences",Context.MODE_PRIVATE)
         val currentTime = Calendar.getInstance().time
         val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
         val key = dateFormat.format(currentTime)
+        val imageTitle = "${key}title"
         if(sharedPref.contains(key)){
             Picasso.with(imageView.context).load(sharedPref.getString(key,"")).into(imageView)
+            imageView.contentDescription = imageView.context.getString(R.string.nasa_picture_of_day_content_description_format,sharedPref.getString(imageTitle,""))
             return
         }
         val repo = Repository(app.applicationContext)
         repo.fetchTodaysImage {
-            if (it.mediaType == "image"){
-                val editor = sharedPref.edit()
-                Picasso.with(imageView.context).load(it.url).into(imageView)
-                editor.putString(key,it.url)
-                editor.apply()
+            it?.let {
+                if (it.mediaType == "image"){
+                    val editor = sharedPref.edit()
+                    Picasso.with(imageView.context).load(it.url).into(imageView)
+                    imageView.contentDescription = imageView.context.getString(R.string.nasa_picture_of_day_content_description_format,it.title)
+                    editor.putString(key,it.url)
+                    editor.putString(imageTitle, it.title)
+                    editor.apply()
+                }
+            }?: kotlin.run {
+                imageView.contentDescription = imageView.context.getString(R.string.this_is_nasa_s_picture_of_day_showing_nothing_yet)
             }
-
         }
     }
-
-
 }
