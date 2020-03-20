@@ -13,15 +13,12 @@ import com.udacity.asteroidradar.repo.observeX
 
 class MainFragment : Fragment() {
 
-    lateinit var asteroidAdapter: AsteroidAdapter
+    private lateinit var asteroidAdapter: AsteroidAdapter
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentMainBinding.inflate(inflater)
         binding.lifecycleOwner = this
         asteroidAdapter = AsteroidAdapter()
@@ -29,7 +26,7 @@ class MainFragment : Fragment() {
         binding.asteroidRecycler.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = asteroidAdapter.apply {
-                onItemClick { model, view, position ->
+                onItemClick { model, _, _ ->
                     findNavController().navigate(MainFragmentDirections.actionShowDetail(model))
                 }
             }

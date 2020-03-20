@@ -1,6 +1,7 @@
 package com.udacity.asteroidradar.repo
 
 import android.content.Context
+import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.api.API
@@ -16,6 +17,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class Repository(val context: Context) {
@@ -50,6 +52,28 @@ class Repository(val context: Context) {
             }
 
         })
+    }
+
+    fun fetchAsteroidsFromWorker(callback: (ArrayList<Asteroid>?)->Unit) {
+        val service: API = RetrofitInstance.retrofitInstance.create(
+            API::class.java
+        )
+        val calendar = Calendar.getInstance()
+
+        val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
+        val startDate = dateFormat.format(calendar.time)
+        calendar.add(Calendar.DAY_OF_YEAR, 7)
+        val endDate = dateFormat.format(calendar.time)
+        val call = service.getAsteroidsFor7Days(startDate, endDate)
+
+        val response = call.execute()
+        if(response.isSuccessful){
+            val json = JSONObject(response.body()!!.string())
+            val arrayList = parseAsteroidsJsonResult(json)
+            callback.invoke(arrayList)
+        }else{
+            callback.invoke(null)
+        }
     }
 
     fun fetchTodaysImage(callback: (PictureOfDay) -> Unit) {
