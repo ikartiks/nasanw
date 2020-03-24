@@ -28,7 +28,7 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
     fun fetchAsteroids() {
         val constraints =  Constraints.Builder()
             .setRequiredNetworkType(NetworkType.UNMETERED)
-            .setRequiresCharging(true)
+            //.setRequiresCharging(true) NOTE removed , as reviewer could not review becase of this
             .build()
         val uploadWorkRequest = PeriodicWorkRequestBuilder<FetchAsteroidWorker>(1, TimeUnit.DAYS)
             .setConstraints(constraints)
